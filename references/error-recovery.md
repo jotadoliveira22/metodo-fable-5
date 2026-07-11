@@ -47,6 +47,8 @@ un bug no se reproduce, o una solución previa no funcionó.
 3. Verificar que lo desplegado es lo que crees (hash del commit, tag de la imagen).
 4. Ante producción degradada: primero estabilizar (rollback a la última versión buena),
    después diagnosticar con calma. El rollback es una herramienta, no una derrota.
+   El rollback en producción se PROPONE al usuario junto con el plan de reversa; se
+   ejecuta sin preguntar solo si el usuario ya delegó explícitamente esa autoridad.
 5. Documentar el incidente: síntoma, causa, corrección, prevención.
 
 ## 4. Recuperación de automatizaciones fallidas

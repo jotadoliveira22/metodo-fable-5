@@ -35,7 +35,7 @@ references/error-recovery.md              Debugging, fallos de despliegue, recup
 references/software-projects.md           Reglas para código y repositorios
 references/automation-projects.md         Reglas para automatizaciones e integraciones
 examples/                                 El método aplicado de punta a punta (3 casos)
-evals/evals.json                          12 casos de evaluación
+evals/evals.json                          13 casos de evaluación
 CHANGELOG.md                              Historial de versiones
 ```
 
@@ -54,7 +54,7 @@ no a este Skill.
 
 ## Evaluación
 
-`evals/evals.json` contiene 12 casos con solicitud, contexto, comportamiento esperado,
+`evals/evals.json` contiene 13 casos con solicitud, contexto, comportamiento esperado,
 errores a evitar y criterios de aprobación. Para probar el Skill tras un cambio, pide a
 una instancia de Claude sin contexto previo que resuelva los casos y puntúa con esos
 criterios.

@@ -1,6 +1,7 @@
 ---
 name: metodo-fable-5
-description: Marco operativo para analizar, planificar, ejecutar y verificar tareas complejas de software, automatización, arquitectura, debugging, investigación técnica y consultoría. Usar cuando una solicitud requiera varias etapas, decisiones técnicas, uso de herramientas, validación o recuperación ante errores. No usar para preguntas triviales de una sola respuesta.
+description: Marco operativo para analizar, planificar, ejecutar y verificar tareas complejas de software, automatización, arquitectura, debugging, investigación técnica y consultoría. Usar cuando una solicitud requiera varias etapas, decisiones técnicas, uso de herramientas, validación o recuperación ante errores — por ejemplo corregir bugs o deploys rotos, diseñar la arquitectura de un MVP, crear integraciones y automatizaciones (CRM, webhooks, e-commerce, APIs), revisar código, recuperar fallos en producción o investigar integraciones técnicas. No usar para preguntas triviales de una sola respuesta.
+version: 1.0.1
 ---
 
 # Método Fable 5 — Marco operativo para tareas complejas
@@ -49,9 +50,11 @@ una tarea simple puede completar el ciclo en minutos; una crítica exige todas l
 |---|---|---|---|
 | Simple | 1 archivo/paso, sin efectos colaterales | Ninguna formal | Inspección directa |
 | Moderada | 2–5 pasos, un sistema, reversible | Lista breve de pasos | Ejecutar/probar el cambio |
-| Compleja | Varios sistemas/archivos, decisiones de diseño | Plan con fases y dependencias | Pruebas + casos límite |
-| Crítica | Datos de producción, dinero, seguridad, irreversible | Plan + confirmación del usuario en pasos irreversibles | Verificación completa + revisión adversarial obligatoria |
+| Compleja | Varios sistemas/archivos, decisiones de diseño | Plan con fases y dependencias | Pruebas + casos límite + revisión adversarial |
+| Crítica | Datos de producción, dinero, seguridad, irreversible | Plan + confirmación del usuario en pasos irreversibles | Verificación completa + revisión adversarial + plan de reversa |
 
+Esta tabla es un resumen; la fuente completa de verificación por nivel es
+[references/quality-gates.md](references/quality-gates.md).
 Heurística: si dudas entre dos niveles, trata la tarea como el nivel superior.
 
 ### 3. Definición de éxito
@@ -100,14 +103,11 @@ Mínimos por nivel y lista de puertas de calidad: [references/quality-gates.md](
 
 ### 8. Revisión adversarial
 
-Antes de entregar (obligatoria en tareas complejas/críticas), pregúntate y responde con evidencia:
-
-- ¿Qué podría estar incorrecto? ¿Qué supuestos no comprobé?
-- ¿Qué casos límite existen (vacío, nulo, duplicado, concurrente, tamaño extremo)?
-- ¿Qué falla en producción que no falla en mi entorno?
-- ¿Hay secretos expuestos, entradas sin validar, permisos excesivos?
-- ¿Qué depende de servicios externos y qué pasa si fallan?
-- ¿Qué parte requiere intervención humana y lo dije explícitamente?
+Antes de entregar (obligatoria en tareas complejas y críticas), responde por escrito las
+8 preguntas de [references/quality-gates.md](references/quality-gates.md) §5 — esa lista es
+la fuente única. Esencia: qué podría estar mal, qué supuestos no comprobaste, qué casos
+límite y riesgos de seguridad existen, qué difiere de producción y qué requiere a un humano.
+Cada respuesta lleva evidencia o el reconocimiento explícito de "no comprobado".
 
 ### 9. Recuperación ante errores
 
@@ -171,7 +171,9 @@ Cuando el usuario diga "aprende de este proyecto", "incorpora esta corrección a
 4. Actualiza el archivo correcto (SKILL.md solo para reglas de alto nivel; detalles en `references/`).
 5. Agrega o modifica un caso en `evals/evals.json` que capture el comportamiento nuevo.
 6. Verifica que no duplique ni contradiga reglas existentes (busca antes de agregar).
-7. Incrementa la versión (semver: parche = ajuste, menor = regla nueva, mayor = cambio de estructura).
+7. Incrementa la versión (semver: parche = ajuste, menor = regla nueva, mayor = cambio de
+   estructura) en los TRES lugares donde vive: frontmatter de `SKILL.md` (campo `version`),
+   `CHANGELOG.md` y `evals/evals.json` (campo `version`). Deben coincidir siempre.
 8. Documenta el cambio en `CHANGELOG.md` con fecha y motivo.
 
 ## Mapa de archivos

@@ -56,7 +56,9 @@ Anti-patrones:
 
 ## 4. Matriz de decisión arquitectónica
 
-Para cada opción seria, puntuar mentalmente (alto/medio/bajo) contra:
+Para cada opción seria, puntuar (alto/medio/bajo) contra los criterios siguientes y
+comunicar en la entrega las 3–4 filas que decidieron la elección — la matriz debe ser
+auditable en la respuesta, no un ejercicio privado:
 
 | Criterio | Pregunta clave |
 |---|---|

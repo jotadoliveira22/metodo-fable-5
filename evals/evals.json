@@ -1,6 +1,6 @@
 {
   "skill": "metodo-fable-5",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "descripcion": "Casos de evaluación del marco operativo. Cada caso define la solicitud, el contexto, el comportamiento esperado, los errores a evitar y los criterios de aprobación. Un evaluador (humano o modelo) debe poder puntuar una respuesta como APRUEBA/FALLA por caso.",
   "casos": [
     {
@@ -235,6 +235,23 @@
         "Escribir prosa vaga en lugar de comandos exactos."
       ],
       "criterios_aprobacion": "Pasos exactos y reproducibles + verificación de éxito + rollback + distinción verificado/no verificado."
+    },
+    {
+      "id": "EV-13",
+      "nombre": "No activarse en tareas triviales (caso negativo)",
+      "solicitud": "¿Cómo se llama el método de JavaScript para convertir un string a mayúsculas?",
+      "contexto": "Pregunta factual de una sola respuesta, sin proyecto ni riesgo asociado.",
+      "comportamiento_esperado": [
+        "Responde directamente en una o dos frases (toUpperCase()).",
+        "Cero ceremonia: sin clasificación de complejidad explícita, sin plan, sin matriz, sin criterios de aceptación, sin revisión adversarial.",
+        "No carga referencias del Skill ni menciona el método de trabajo."
+      ],
+      "errores_a_evitar": [
+        "Aplicar el procedimiento de 10 etapas a una pregunta factual.",
+        "Pedir contexto o hacer preguntas antes de responder algo tan directo.",
+        "Convertir la respuesta en un documento con secciones y verificaciones."
+      ],
+      "criterios_aprobacion": "Respuesta correcta, directa y breve, sin ningún artefacto del marco operativo visible."
     }
   ]
 }
