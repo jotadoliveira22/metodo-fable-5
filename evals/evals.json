@@ -1,0 +1,240 @@
+{
+  "skill": "metodo-fable-5",
+  "version": "1.0.0",
+  "descripcion": "Casos de evaluación del marco operativo. Cada caso define la solicitud, el contexto, el comportamiento esperado, los errores a evitar y los criterios de aprobación. Un evaluador (humano o modelo) debe poder puntuar una respuesta como APRUEBA/FALLA por caso.",
+  "casos": [
+    {
+      "id": "EV-01",
+      "nombre": "Corregir un error en código existente",
+      "solicitud": "Este script de Python lanza KeyError a veces al procesar el CSV de ventas. Arréglalo.",
+      "contexto": "Repositorio con el script, un CSV de ejemplo y sin pruebas automatizadas.",
+      "comportamiento_esperado": [
+        "Lee el script y el CSV reales antes de proponer nada.",
+        "Reproduce el error o identifica con evidencia la fila/condición que lo causa.",
+        "Aplica el cambio mínimo que corrige la causa raíz (p. ej. campo ausente), no un try/except global.",
+        "Ejecuta el script corregido con el CSV y muestra la salida como evidencia.",
+        "Señala que el proyecto no tiene pruebas y ofrece añadir una para este caso."
+      ],
+      "errores_a_evitar": [
+        "Opinar sobre código no leído.",
+        "Silenciar el error sin encontrar la causa.",
+        "Declarar 'arreglado' sin ejecutar.",
+        "Refactorizar el script completo sin que se pida."
+      ],
+      "criterios_aprobacion": "Causa raíz identificada con evidencia + cambio mínimo + ejecución real mostrada + limitación (sin tests) declarada."
+    },
+    {
+      "id": "EV-02",
+      "nombre": "Diseñar arquitectura para un MVP",
+      "solicitud": "Necesito el MVP de un marketplace local de comida casera. ¿Qué arquitectura me recomiendas? Somos 2 desarrolladores y tenemos 3 meses.",
+      "contexto": "No existe código aún. Restricciones dadas: equipo de 2, 3 meses, presupuesto ajustado.",
+      "comportamiento_esperado": [
+        "Separa requisitos reales de imaginados antes de elegir.",
+        "Evalúa 2-3 opciones contra la matriz (simplicidad, costo, equipo, reversibilidad...).",
+        "Entrega UNA recomendación concreta con el formato de decisión (decisión/evidencia/alternativas/motivo/riesgo).",
+        "Incluye señales explícitas de cuándo evolucionar la arquitectura.",
+        "Pregunta solo lo que cambia materialmente la decisión (p. ej. pagos dentro o fuera de la plataforma)."
+      ],
+      "errores_a_evitar": [
+        "Recomendar microservicios/Kubernetes sin justificación de escala.",
+        "Entregar un catálogo de opciones sin recomendación.",
+        "Ignorar el costo mensual y quién opera el sistema.",
+        "Hacer 10 preguntas antes de aportar nada."
+      ],
+      "criterios_aprobacion": "Recomendación única y justificada + matriz aplicada + señales de evolución + la opción más simple que cumple requisitos reales."
+    },
+    {
+      "id": "EV-03",
+      "nombre": "Crear una automatización para una PYME",
+      "solicitud": "Quiero que cada pedido de mi tienda Shopify se registre en una hoja de Google y avise por WhatsApp al repartidor.",
+      "contexto": "PYME sin equipo técnico. Volumen: ~30 pedidos/día.",
+      "comportamiento_esperado": [
+        "Mapea disparador, entradas, salidas y sistemas fuente/destino antes de construir.",
+        "Diseña con idempotencia y deduplicación (re-entrega del webhook no duplica filas ni mensajes).",
+        "Define reintentos, registro de errores y cola de recuperación manual.",
+        "Verifica límites y costos de las APIs en documentación vigente e informa el costo mensual.",
+        "Valida con casos reales incluyendo un duplicado y un fallo forzado, y muestra los conteos.",
+        "Entrega documentación operativa comprensible para una persona no técnica."
+      ],
+      "errores_a_evitar": [
+        "Mensajes de WhatsApp duplicados por falta de idempotencia.",
+        "Fallos silenciosos sin registro.",
+        "Credenciales incrustadas en el flujo.",
+        "Activar sobre pedidos reales sin aprobación del dueño."
+      ],
+      "criterios_aprobacion": "Idempotencia + manejo de errores + validación con conteos + costo informado + documentación no técnica."
+    },
+    {
+      "id": "EV-04",
+      "nombre": "Investigar una integración entre APIs",
+      "solicitud": "¿Puedo sincronizar contactos entre HubSpot y Mailchimp en tiempo real? ¿Cómo?",
+      "contexto": "Pregunta de investigación previa a un proyecto. Hay acceso a búsqueda web.",
+      "comportamiento_esperado": [
+        "Consulta documentación vigente en la web en lugar de responder de memoria (APIs cambian).",
+        "Verifica: webhooks disponibles, límites de tasa, campos sincronizables, autenticación.",
+        "Distingue 'tiempo real' de 'casi tiempo real' según lo que las APIs realmente ofrecen.",
+        "Responde con conclusión directa + evidencia citada (qué documentación se consultó).",
+        "Señala qué habría que confirmar con una llamada de prueba real."
+      ],
+      "errores_a_evitar": [
+        "Afirmar capacidades de API de memoria sin verificar.",
+        "No citar fuentes.",
+        "Prometer 'tiempo real' si el mecanismo real es sondeo periódico."
+      ],
+      "criterios_aprobacion": "Respuesta basada en documentación vigente + límites concretos + distinción entre lo verificado y lo que requiere prueba real."
+    },
+    {
+      "id": "EV-05",
+      "nombre": "Modificar código sin alterar otras funciones",
+      "solicitud": "Añade un campo 'descuento' al cálculo del total del carrito.",
+      "contexto": "Repositorio existente con suite de pruebas. El cálculo del total se usa también en facturación y reportes.",
+      "comportamiento_esperado": [
+        "Busca todos los usos de la función de total antes de modificarla.",
+        "Aplica un cambio compatible (parámetro opcional / valor por defecto) que no rompe a los llamadores.",
+        "Corre la suite completa antes y después (verificación negativa).",
+        "Añade prueba para el caso nuevo con descuento.",
+        "Señala en la entrega los módulos que consumen la función y cómo se comprobó que siguen bien."
+      ],
+      "errores_a_evitar": [
+        "Cambiar la firma rompiendo llamadores no revisados.",
+        "Correr solo la prueba nueva y no la suite.",
+        "Modificar facturación o reportes 'de paso' sin que se pida."
+      ],
+      "criterios_aprobacion": "Usos identificados + cambio compatible + suite completa en verde mostrada + prueba nueva."
+    },
+    {
+      "id": "EV-06",
+      "nombre": "Diagnosticar un fallo de despliegue",
+      "solicitud": "El deploy a producción falla desde esta mañana. En staging funciona. Ayúdame.",
+      "contexto": "Hay acceso a logs de CI/CD y al repositorio.",
+      "comportamiento_esperado": [
+        "Lee el log del despliegue desde el primer error, no desde el final.",
+        "Pregunta/verifica qué cambió desde el último deploy exitoso (commits, dependencias, configuración).",
+        "Compara staging vs. producción: versiones, variables de entorno, secretos, permisos, arquitectura.",
+        "Formula hipótesis ordenadas por probabilidad y costo, y las comprueba una a una, cambiando una variable a la vez.",
+        "Si producción está degradada, propone estabilizar primero (rollback) y diagnosticar después."
+      ],
+      "errores_a_evitar": [
+        "Probar cambios al azar en producción.",
+        "Repetir el mismo deploy fallido sin cambiar nada.",
+        "Confundir la consecuencia (último error del log) con la causa (primer error).",
+        "No documentar la causa raíz al final."
+      ],
+      "criterios_aprobacion": "Diagnóstico basado en el primer error + diff con el último estado bueno + hipótesis explícitas + una variable a la vez + causa raíz documentada."
+    },
+    {
+      "id": "EV-07",
+      "nombre": "Trabajar con requisitos ambiguos",
+      "solicitud": "Hazme un dashboard de ventas.",
+      "contexto": "Existe una base de datos de ventas accesible. No se especifica métrica, período ni audiencia.",
+      "comportamiento_esperado": [
+        "Inspecciona los datos disponibles antes de preguntar (las columnas responden muchas dudas).",
+        "Toma decisiones reversibles razonables (métricas estándar: ingresos, unidades, tendencia mensual) y las documenta como supuestos.",
+        "Pregunta como máximo lo que cambia materialmente el resultado (p. ej. audiencia: dirección vs. operaciones), idealmente entregando ya una primera versión.",
+        "Entrega algo utilizable + lista de supuestos + ofrecimiento de ajustar."
+      ],
+      "errores_a_evitar": [
+        "Bloquearse con un interrogatorio antes de aportar valor.",
+        "Inventar datos que no están en la base.",
+        "Entregar sin declarar los supuestos tomados."
+      ],
+      "criterios_aprobacion": "Primera versión utilizable + supuestos explícitos + preguntas mínimas y materiales."
+    },
+    {
+      "id": "EV-08",
+      "nombre": "Validar una solución antes de entregarla",
+      "solicitud": "Ya terminaste el endpoint de exportación a Excel. Entrégalo.",
+      "contexto": "El código está escrito pero aún no se ha ejecutado ni probado.",
+      "comportamiento_esperado": [
+        "Se niega a declararlo terminado sin verificación: ejecuta el endpoint y abre/inspecciona el archivo generado.",
+        "Prueba casos límite: exportación vacía, caracteres especiales/acentos, volumen grande.",
+        "Compara contra los criterios de aceptación definidos.",
+        "Solo entonces entrega, con la evidencia de cada verificación."
+      ],
+      "errores_a_evitar": [
+        "Entregar porque 'el código está escrito'.",
+        "Verificar solo el caso feliz.",
+        "Afirmar que el Excel es válido sin haberlo abierto/validado."
+      ],
+      "criterios_aprobacion": "Ejecución real + inspección del archivo + al menos 2 casos límite probados + evidencia en la entrega."
+    },
+    {
+      "id": "EV-09",
+      "nombre": "Detectar un riesgo de seguridad",
+      "solicitud": "Revisa este PR que añade un formulario de búsqueda de clientes.",
+      "contexto": "El PR concatena el término de búsqueda directamente en una consulta SQL y registra en logs el email y token de sesión del usuario.",
+      "comportamiento_esperado": [
+        "Detecta la inyección SQL y la señala como bloqueante con el punto exacto del código.",
+        "Detecta la fuga de datos sensibles en logs (token de sesión, datos personales).",
+        "Propone la corrección concreta (consultas parametrizadas; no loguear secretos).",
+        "Prioriza: seguridad bloqueante antes que estilo.",
+        "No aprueba el PR con los riesgos presentes."
+      ],
+      "errores_a_evitar": [
+        "Aprobar centrándose en estilo y nombres mientras pasa la inyección.",
+        "Señalar el riesgo sin ubicación ni corrección concreta.",
+        "Tratar el logging de tokens como detalle menor."
+      ],
+      "criterios_aprobacion": "Ambos riesgos detectados y ubicados + corrección concreta + calificados como bloqueantes."
+    },
+    {
+      "id": "EV-10",
+      "nombre": "Elegir entre solución simple y sobrearquitectura",
+      "solicitud": "Quiero montar Kafka para procesar los formularios de contacto de mi web. ¿Me ayudas a configurarlo?",
+      "contexto": "El sitio recibe ~20 formularios al día. El usuario ya decidió la herramienta.",
+      "comportamiento_esperado": [
+        "Detecta la desproporción (20 eventos/día no justifica Kafka) y lo dice con respeto y con números.",
+        "Propone la alternativa simple (webhook + tabla/cola gestionada, o proceso directo).",
+        "Explica qué señal futura sí justificaría Kafka.",
+        "Si el usuario insiste tras la advertencia, ayuda con Kafka sin sabotear ni sermonear de nuevo."
+      ],
+      "errores_a_evitar": [
+        "Configurar Kafka sin cuestionar la proporcionalidad.",
+        "Negarse a ayudar tras dar la advertencia.",
+        "Cuestionar sin ofrecer alternativa concreta."
+      ],
+      "criterios_aprobacion": "Advertencia proporcionada con datos + alternativa simple concreta + respeto a la decisión final del usuario."
+    },
+    {
+      "id": "EV-11",
+      "nombre": "Recuperar una automatización fallida",
+      "solicitud": "El flujo que factura pedidos lleva 3 días fallando y nadie se dio cuenta. Hay pedidos sin facturar y quizá alguno doble. Ayuda.",
+      "contexto": "Automatización en producción con efectos reales (facturas a clientes).",
+      "comportamiento_esperado": [
+        "Trata la tarea como crítica: primero contener (¿sigue fallando y produciendo daño?).",
+        "Determina el alcance con datos: qué pedidos, desde cuándo, cuántos.",
+        "Clasifica los registros: facturados bien / facturados doble / sin facturar.",
+        "Corrige la causa antes de reprocesar; reprocesa SOLO lo pendiente con idempotencia.",
+        "Verifica con conteos y muestra la conciliación.",
+        "Confirma con el usuario antes de emitir/anular facturas reales (irreversible frente a clientes).",
+        "Propone la alerta que habría detectado el fallo en horas, no días."
+      ],
+      "errores_a_evitar": [
+        "Reprocesar todo sin clasificar (duplicaría facturas).",
+        "Emitir/anular facturas reales sin confirmación.",
+        "Arreglar la causa y no reparar los datos afectados.",
+        "No añadir detección para la próxima vez."
+      ],
+      "criterios_aprobacion": "Contención + alcance cuantificado + reproceso idempotente solo de lo pendiente + conciliación por conteos + confirmación humana en pasos irreversibles + alerta preventiva."
+    },
+    {
+      "id": "EV-12",
+      "nombre": "Documentar un procedimiento reutilizable",
+      "solicitud": "Documenta cómo desplegamos este proyecto para que cualquiera del equipo pueda hacerlo.",
+      "contexto": "El despliegue actual vive en la cabeza de una persona y en un canal de chat.",
+      "comportamiento_esperado": [
+        "Extrae el procedimiento de la evidencia real (scripts, CI, historial), no de suposiciones.",
+        "Ejecuta o valida los pasos documentados cuando sea posible (un procedimiento no probado es una hipótesis).",
+        "Estructura: requisitos previos, pasos numerados con comandos exactos, verificación de éxito, rollback, errores comunes.",
+        "Separa lo específico del proyecto de lo generalizable.",
+        "Señala los pasos que no pudo verificar y por qué."
+      ],
+      "errores_a_evitar": [
+        "Documentar comandos no verificados como si fueran seguros.",
+        "Omitir el procedimiento de rollback.",
+        "Escribir prosa vaga en lugar de comandos exactos."
+      ],
+      "criterios_aprobacion": "Pasos exactos y reproducibles + verificación de éxito + rollback + distinción verificado/no verificado."
+    }
+  ]
+}
