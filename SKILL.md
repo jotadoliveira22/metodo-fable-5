@@ -1,7 +1,7 @@
 ---
 name: metodo-fable-5
 description: Marco operativo para analizar, planificar, ejecutar y verificar tareas complejas de software, automatización, arquitectura, debugging, investigación técnica y consultoría. Usar cuando una solicitud requiera varias etapas, decisiones técnicas, uso de herramientas, validación o recuperación ante errores — por ejemplo corregir bugs o deploys rotos, diseñar la arquitectura de un MVP, crear integraciones y automatizaciones (CRM, webhooks, e-commerce, APIs), revisar código, recuperar fallos en producción o investigar integraciones técnicas. No usar para preguntas triviales de una sola respuesta.
-version: 2.1.0
+version: 2.2.0
 ---
 
 # Método Fable 5 — heurísticas generativas + capa de auditoría
@@ -50,6 +50,12 @@ que refactorizar 500 líneas de un frontend interno.
 
 Ante la duda, la fila de abajo. Una tarea "trivial" que falla dos veces baja una fila.
 
+**Kit de emergencia (fila 3–4)** — antes de escribir cualquier análisis, responder en una
+línea cada una: (a) ¿el estado actual está respaldado? (b) ¿los insumos originales (CSV,
+logs, archivos fuente) están preservados, o se pierden cada día que pasa? (c) ¿el proceso
+sigue corriendo, y debe seguir corriendo? Cualquier "no sé" se convierte en la **primera
+acción** de la entrega — antes del diagnóstico, no después.
+
 ### 3. Pre-mortem de 2 líneas (simular el fallo antes de la solución)
 
 **Antes de escribir la solución, describe en 2 líneas el escenario más probable en que
@@ -64,6 +70,8 @@ continuar** — la contradicción suele ser donde está el problema real. "Este 
 que hace X pero su estructura sugiere Y." "El usuario dice que es urgente pero pide algo
 de semanas." "El README exige Python 3.8 pero el código usa sintaxis de 3.12."
 No resuelvas la contradicción en silencio eligiendo un lado: nómbrala.
+La última contradicción que buscar es la tuya: si tu clasificación de riesgo y tu decisión
+de contención no cuentan la misma historia, una de las dos está mal.
 
 ### 5. El principio de sorpresa (debugging)
 
@@ -93,6 +101,21 @@ donde importe; desde la fila 3, las etiquetas son obligatorias en las afirmacion
 Precisiones: consultar documentación vigente citando la fuente es [verificado] respecto
 a lo que la fuente DICE — el comportamiento real de la API sigue [asumido] hasta la
 llamada de prueba. Una etiqueta puede promoverse al verificar: se anota [razonado→verificado].
+Los supuestos más peligrosos no son los técnicos sino los del dominio: tasas, reglas de
+negocio, quién cobra qué, qué significa un campo para el negocio. Antes de cerrar:
+**¿qué estoy asumiendo sobre el NEGOCIO (no sobre el código) que el usuario no confirmó?**
+
+## Coherencia riesgo → acción
+
+Todo riesgo material debe cambiar al menos una decisión concreta del plan. Ante una vía
+plausible de daño silencioso, acumulativo o difícil de revertir, sin trazabilidad para
+detectarlo después, el default es pausar, aislar o pasar a modo diagnóstico — la ausencia
+de evidencia de daño no es evidencia de seguridad. Comprobación final obligatoria:
+**"¿mi plan permite continuar exactamente lo que acabo de calificar como peligroso?"**
+Si sí, corrígelo antes de entregar. Contrapeso: riesgo alto no siempre es detener —
+decide por daño, reversibilidad, detectabilidad y aislamiento. Patrones resueltos:
+[examples/corrupcion-silenciosa.md](examples/corrupcion-silenciosa.md) y
+[examples/riesgo-sin-pausar.md](examples/riesgo-sin-pausar.md).
 
 ## Procedimiento (condensado)
 
@@ -111,6 +134,13 @@ llamada de prueba. Una etiqueta puede promoverse al verificar: se anota [razonad
    ([references/audit-layer.md](references/audit-layer.md)); entrega con el resultado
    primero, etiquetas de confianza, evidencia citada y limitaciones reales.
    "Escribí el código" ≠ "funciona".
+
+**Sobriedad en la entrega**: aplica las heurísticas sin nombrarlas — nada de "aplicando
+el principio de sorpresa", "según el Método Fable 5" ni pies de página del método. Las
+etiquetas de confianza se usan donde la distinción cambia una decisión material, no en
+cada afirmación. Si quitar una tabla o sección no le quita al usuario ninguna decisión ni
+acción, quítala. El formato Decisión/Evidencia/Alternativas/Motivo/Riesgo se reserva para
+la decisión central de la entrega, no para cada elección intermedia.
 
 ## Aprender por patrón: los ejemplos son el vehículo principal
 

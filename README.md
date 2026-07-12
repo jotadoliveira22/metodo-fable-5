@@ -40,7 +40,9 @@ examples/debugging-hipotesis-falsa.md     Principio de sorpresa: la hipótesis o
 examples/debugging-example.md             Diagnóstico con evidencia y cambio mínimo
 examples/software-architecture-example.md Requisitos reales vs. imaginados, anti-sobrearquitectura
 examples/automation-pyme-example.md       Idempotencia, conteos, entrega no técnica
-evals/evals.json                          16 casos de evaluación
+examples/corrupcion-silenciosa.md         Falsos éxitos: pausar, preservar, particionar
+examples/riesgo-sin-pausar.md             Proporcionalidad: continuar con guardas
+evals/evals.json                          20 casos de evaluación
 CHANGELOG.md                              Historial de versiones
 ```
 
@@ -60,7 +62,7 @@ no a este Skill.
 
 ## Evaluación
 
-`evals/evals.json` contiene 16 casos con solicitud, contexto, comportamiento esperado,
+`evals/evals.json` contiene 20 casos con solicitud, contexto, comportamiento esperado,
 errores a evitar y criterios de aprobación. Para probar el Skill tras un cambio, pide a
 una instancia de Claude sin contexto previo que resuelva los casos y puntúa con esos
 criterios.

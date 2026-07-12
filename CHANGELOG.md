@@ -5,6 +5,44 @@ Formato: [Keep a Changelog](https://keepachangelog.com/es/). Versionado: semver
 mayor = cambio de estructura o de procedimiento principal). La versión vive en tres
 lugares que deben coincidir: frontmatter de `SKILL.md`, este archivo y `evals/evals.json`.
 
+## [2.2.0] - 2026-07-12
+
+Correcciones de tres fallos observados en pruebas A/B reales (Sonnet+skill vs. modelos
+sin skill): P1 — el supuesto de negocio más importante (tasa de comisión aplicada a un
+método de pago nuevo) pasó sin marca [asumido] mientras se etiquetaban supuestos
+técnicos; P2 — se clasificó riesgo máximo con posible corrupción silenciosa y aun así
+el plan no pausó el proceso, no respaldó, no preservó los insumos y auditó solo errores
+visibles; en ambas, la respuesta con skill fue la más larga y menos accionable por
+unidad de texto. Los seis movimientos generativos siguen siendo seis; el peso del
+aprendizaje va en dos ejemplos nuevos, no en reglas.
+
+### Añadido
+
+- SKILL.md: **Kit de emergencia** (fila 3–4) — respaldo, preservación de insumos que
+  expiran y estado del proceso se responden ANTES de cualquier análisis; un "no sé" es
+  la primera acción de la entrega.
+- SKILL.md: **Coherencia riesgo→acción** — todo riesgo material cambia al menos una
+  decisión del plan; ante daño silencioso/acumulativo/difícil de revertir sin
+  trazabilidad, el default es pausar/aislar/diagnóstico; comprobación final: "¿mi plan
+  permite continuar exactamente lo que califiqué de peligroso?"; con el contrapeso
+  explícito de proporcionalidad (daño, reversibilidad, detectabilidad, aislamiento).
+- SKILL.md: **Sobriedad en la entrega** — heurísticas sin nombrarlas, etiquetas solo
+  donde cambian una decisión material, secciones que no aportan decisión/acción se
+  quitan, formato de decisión solo para la decisión central.
+- Precisión al movimiento 6: los supuestos más peligrosos son los del NEGOCIO (tasas,
+  reglas, significado de campos), no los técnicos (P1).
+- Precisión al movimiento 4: la última contradicción que buscar es la propia — riesgo
+  declarado vs. contención decidida deben contar la misma historia (P2).
+- `examples/corrupcion-silenciosa.md`: pausar/aislar + preservar primero + partición en
+  cinco grupos (errores / no procesados / éxitos verificados / falsos éxitos / no
+  reconstruibles); "¿qué resultado podría parecer correcto y aun así estar equivocado?".
+- `examples/riesgo-sin-pausar.md`: contraejemplo de proporcionalidad — error visible,
+  reversible, trazable y aislado → continuar con guardas; evita que la regla de
+  coherencia se vuelva paranoia.
+- Evals EV-17..EV-20: puntúan la DECISIÓN, no la mención del riesgo, con penalización
+  en ambas direcciones (riesgo reconocido sin cambio de acción, y pausa de producción
+  ante riesgo menor). Acertar el diagnóstico ya no puntúa en EV-17. Total: 20 casos.
+
 ## [2.1.0] - 2026-07-12
 
 Correcciones derivadas de la segunda prueba con instancia aislada sobre la v2

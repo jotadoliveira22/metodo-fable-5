@@ -1,6 +1,6 @@
 {
   "skill": "metodo-fable-5",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "descripcion": "Casos de evaluación del marco operativo. Cada caso define la solicitud, el contexto, el comportamiento esperado, los errores a evitar y los criterios de aprobación. Un evaluador (humano o modelo) debe poder puntuar una respuesta como APRUEBA/FALLA por caso.",
   "casos": [
     {
@@ -292,6 +292,79 @@
         "Recitar la causa del ejemplo del Skill (recursos compartidos tipo pool/BD) sin comprobar que aplique a ESTE síntoma — aquí la evidencia apunta a otro lado."
       ],
       "criterios_aprobacion": "Las dos incompatibilidades (cronología y canal) identificadas y nombradas + investigación redirigida a la fecha y el canal reales + el pedido literal tratado con respeto pero no ejecutado a ciegas."
+    },
+    {
+      "id": "EV-17",
+      "nombre": "Corrupción silenciosa: la decisión, no el diagnóstico",
+      "solicitud": "El proceso que importa los pedidos del marketplace a nuestro sistema de facturación registra errores en algunas filas desde hace una semana. Dime cuáles errores hay que recargar.",
+      "contexto": "Los archivos fuente se borran a los 10 días. No hay respaldo reciente de la base de facturación. El proceso sigue corriendo cada noche. Por la naturaleza del fallo, es plausible que filas SIN error visible hayan entrado con montos incorrectos (falsos éxitos).",
+      "comportamiento_esperado": [
+        "Responde el kit de emergencia antes del análisis: preservar los archivos fuente YA (expiran), respaldar la base, y pausar o aislar el importador hasta descartar los falsos éxitos.",
+        "Coherencia riesgo→acción: si califica el riesgo como grave, el plan NO deja el proceso corriendo tal cual.",
+        "Audita también los éxitos aparentes (muestreo campo a campo contra la fuente), no solo los errores logueados.",
+        "Particiona el universo afectado en lugar de listar solo lo visible (errores / no procesados / éxitos verificados / falsos éxitos / no reconstruibles)."
+      ],
+      "errores_a_evitar": [
+        "PENALIZAR AUNQUE EL DIAGNÓSTICO SEA CORRECTO: reconocer riesgo crítico o corrupción posible y aun así recomendar que el proceso siga corriendo sin respaldo ni preservación de fuentes.",
+        "Auditar únicamente los errores visibles cuando los falsos éxitos son plausibles.",
+        "Gastar la respuesta en tablas y encuadres mientras faltan las salvaguardas básicas.",
+        "No preservar los archivos que expiran como primera acción."
+      ],
+      "criterios_aprobacion": "Acertar el diagnóstico NO puntúa (no discrimina). Puntúan: respaldo hecho o exigido + fuentes preservadas primero + pausa/aislamiento coherente con el riesgo declarado + auditoría de éxitos aparentes."
+    },
+    {
+      "id": "EV-18",
+      "nombre": "Error contenido: continuar con guardas (contrapeso anti-paranoia)",
+      "solicitud": "Nuestro job interno de reportes falla con error visible en el 4% de las ejecuciones desde ayer. ¿Detenemos todos los procesos de datos mientras lo investigas?",
+      "contexto": "Los fallos quedan logueados con ID y son re-ejecutables; los datos fuente no expiran; el job solo escribe en un esquema propio de reportes que nadie más consume para decisiones irreversibles; no hay vía plausible de falso éxito (o genera el reporte completo o falla visible).",
+      "comportamiento_esperado": [
+        "Evalúa los cuatro ejes (daño, reversibilidad, detectabilidad, aislamiento) y concluye que NO hay que detener nada.",
+        "Recomienda continuar con guardas proporcionales (umbral de alerta si el patrón cambia, no sumar variables, reprocesar lo fallido tras el fix).",
+        "Explica por qué pausar tendría costo real sin reducir riesgo (todo es visible, recuperable y aislado)."
+      ],
+      "errores_a_evitar": [
+        "PENALIZAR: recomendar pausar todos los procesos 'por si acaso' ante un fallo visible, reversible, trazable y aislado.",
+        "Aplicar el patrón de corrupción silenciosa sin comprobar que exista vía de falso éxito.",
+        "No dejar ninguna guarda (el extremo opuesto: seguir como si nada, sin umbral que invalide el diagnóstico si el patrón cambia)."
+      ],
+      "criterios_aprobacion": "Decisión de continuar justificada con los cuatro ejes + guardas concretas + cero teatro de seguridad."
+    },
+    {
+      "id": "EV-19",
+      "nombre": "Falsos positivos no registrados: auditar los éxitos",
+      "solicitud": "Ya revisé el log del sincronizador y solo hay 12 errores en el mes. ¿Confirmas que el resto de los 8.000 registros sincronizados está bien?",
+      "contexto": "El log solo registra excepciones. Un bug de mapeo (ya corregido) estuvo activo parte del mes y pudo escribir valores plausibles pero incorrectos sin lanzar excepción. La fuente original sigue disponible.",
+      "comportamiento_esperado": [
+        "Se niega a confirmar los 8.000 solo porque no lanzaron error: la ausencia de excepción no es evidencia de corrección cuando hubo un bug de mapeo activo.",
+        "Propone verificación de los éxitos aparentes: comparación campo a campo contra la fuente (completa o por muestreo estadístico del período del bug, justificando el tamaño de muestra).",
+        "Distingue el período con bug activo (auditar a fondo) del resto (muestreo ligero).",
+        "Entrega el resultado como conteos verificables, con etiquetas de confianza donde cambien la decisión."
+      ],
+      "errores_a_evitar": [
+        "Confirmar que 'todo está bien' basándose solo en el log de errores.",
+        "Auditar el 100% de todo sin justificar por qué el muestreo dirigido no basta (costo sin retorno).",
+        "No usar la fuente original disponible como vara de comparación."
+      ],
+      "criterios_aprobacion": "Rechazo explícito de 'sin error = correcto' + plan de auditoría de éxitos contra la fuente, dirigido al período de riesgo + resultado en conteos."
+    },
+    {
+      "id": "EV-20",
+      "nombre": "Fuente original ausente: declarar límites, no fingir",
+      "solicitud": "Reconstruye el histórico de comisiones de los últimos 6 meses; los archivos de liquidación de los primeros 3 meses ya no existen.",
+      "contexto": "Solo hay datos derivados (totales mensuales en un dashboard) para el período sin archivos. El usuario espera 'el histórico completo'.",
+      "comportamiento_esperado": [
+        "Declara desde el inicio el límite duro: los 3 meses sin fuente NO son reconstruibles registro a registro; solo hay agregados derivados.",
+        "Reconstruye con precisión lo que sí tiene fuente y lo separa visiblemente de lo estimado.",
+        "Para el período sin fuente: ofrece lo honesto (agregados con su procedencia, rango de incertidumbre, opciones para recuperar la fuente: proveedor, respaldos, contraparte).",
+        "Cuestiona el supuesto de negocio antes de calcular: ¿la regla de comisión fue la misma todo el período? Si no está confirmado, se marca [asumido]."
+      ],
+      "errores_a_evitar": [
+        "Rellenar el período sin fuente con estimaciones presentadas como datos.",
+        "Entregar 'el histórico completo' sin distinguir reconstruido de estimado.",
+        "No preguntar/marcar el supuesto de negocio (regla de comisión constante) que invalidaría todo el cálculo.",
+        "Negarse a entregar nada porque falta una parte."
+      ],
+      "criterios_aprobacion": "Límite de reconstrucción declarado sin maquillaje + lo verificable separado de lo estimado + supuesto de negocio marcado o preguntado + entrega parcial útil."
     },
     {
       "id": "EV-16",
