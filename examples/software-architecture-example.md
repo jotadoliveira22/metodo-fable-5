@@ -5,22 +5,23 @@ reserven clases. ¿Qué arquitectura uso? Tengo poco presupuesto y soy el único
 
 ## Aplicación del método
 
-**1. Comprensión.** Objetivo real: validar el negocio rápido y barato, no construir una
+**Entender.** Objetivo real: validar el negocio rápido y barato, no construir una
 plataforma. Restricciones dadas: presupuesto bajo, equipo de 1. Entregable: recomendación
 de arquitectura accionable, no un catálogo de opciones.
 
-**2. Clasificación.** Compleja (decisión de diseño con alternativas reales), no crítica
-(aún no hay producción ni datos).
+**Presupuesto por costo del error.** Fila 2 (si está mal, cuesta retrabajo: aún no hay
+producción ni datos). La revisión adversarial no es obligatoria en fila 2, pero una
+decisión de arquitectura es cara de revertir — se hace igual.
 
-**3. Éxito.** Una recomendación concreta con stack, costo estimado, justificación contra
+**Evidencia de éxito.** Una recomendación concreta con stack, costo estimado, justificación contra
 la matriz, y señales explícitas de cuándo evolucionar.
 
-**4. Requisitos reales vs. imaginados.**
+**Requisitos reales vs. imaginados.**
 - Reales: reservas con cupo, vista de horario, aviso al cliente, ~200 socios, un gimnasio.
 - Imaginados (no justifican complejidad hoy): "miles de gimnasios", "app nativa en las
   dos tiendas", "IA de recomendaciones".
 
-**5. Matriz aplicada** (opciones serias: A. monolito web + BD gestionada;
+**Matriz aplicada** (opciones serias: A. monolito web + BD gestionada;
 B. microservicios en Kubernetes; C. no-code tipo Airtable/Softr).
 
 | Criterio | A. Monolito | B. Microservicios | C. No-code |
@@ -36,8 +37,9 @@ B. microservicios en Kubernetes; C. no-code tipo Airtable/Softr).
 - **Decisión**: monolito web (un framework full-stack con SSR), PostgreSQL gestionado,
   despliegue en PaaS, notificaciones por WhatsApp/email vía API de terceros. PWA en lugar
   de app nativa.
-- **Evidencia**: 200 socios ≈ decenas de reservas/día — cualquier servidor pequeño sobra;
-  restricciones explícitas de presupuesto y equipo de 1.
+- **Evidencia**: restricciones de presupuesto y equipo de 1 [verificado: están en la
+  solicitud]; decenas de reservas/día [razonado: se deduce de ~200 socios — lo invalidaría
+  un volumen real mucho mayor].
 - **Alternativas**: microservicios (descartado: complejidad operativa sin problema de
   escala demostrado); no-code (segundo mejor: más rápido, pero limita la lógica de cupos
   y penaliza la evolución — se ofrece como opción si el usuario prioriza días sobre semanas).
@@ -56,7 +58,7 @@ empate entre monolito y BaaS, y por eso la única pregunta al usuario es sobre s
 ponerse a construir — necesita UNA recomendación con primer paso concreto, no un catálogo
 para seguir investigando.
 
-**8. Revisión adversarial.** ¿Qué falla primero? Los avisos dependen de una API externa
+**Auditar: revisión adversarial.** ¿Qué falla primero? Los avisos dependen de una API externa
 (WhatsApp) → el MVP debe funcionar aunque el aviso falle (la reserva se guarda igual y
 hay reintento). ¿Datos personales? Sí → HTTPS, contraseñas hasheadas, borrado a petición.
 

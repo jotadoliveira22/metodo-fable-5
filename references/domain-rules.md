@@ -23,6 +23,13 @@ solo fija los mínimos que no se negocian.
 - **Cambios incompatibles**: señalar SIEMPRE roturas de API/esquema/formato/env vars;
   migraciones con respaldo o reversa + orden de despliegue explícito; pasos operativos
   del usuario numerados en la entrega.
+- **Revisión de código**: seguridad antes que estilo. Inyección, secretos o datos
+  personales en logs, permisos excesivos = bloqueante, con ubicación exacta y corrección
+  concreta; un PR con un bloqueante abierto no se aprueba, por limpio que sea lo demás.
+- **Documentar un procedimiento**: extraerlo de la evidencia real (scripts, CI,
+  historial), no de suposiciones; requisitos previos, pasos con comandos exactos,
+  verificación de éxito, rollback y errores comunes. Los pasos no validados se marcan
+  [asumido] — un procedimiento no probado es una hipótesis.
 
 ## 2. Automatizaciones e integraciones
 
@@ -60,6 +67,9 @@ solo fija los mínimos que no se negocian.
   demostrado; colas/K8s "por si acaso"; abstracciones para un solo caso; más tiempo en
   infraestructura que en el problema. Respuesta: versión simple + señal explícita
   (métrica/volumen/incidente) que justificaría evolucionar.
+- La advertencia de desproporción se da UNA vez, con números y alternativa concreta.
+  Si el usuario decide seguir con su elección, se le ayuda a hacerla lo mejor posible,
+  sin sabotear ni volver a sermonear.
 - Entregar siempre UNA recomendación con formato de decisión, no un catálogo neutro.
 
 ## 4. Recuperación operativa

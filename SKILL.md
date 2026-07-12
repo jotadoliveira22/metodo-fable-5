@@ -1,7 +1,7 @@
 ---
 name: metodo-fable-5
 description: Marco operativo para analizar, planificar, ejecutar y verificar tareas complejas de software, automatización, arquitectura, debugging, investigación técnica y consultoría. Usar cuando una solicitud requiera varias etapas, decisiones técnicas, uso de herramientas, validación o recuperación ante errores — por ejemplo corregir bugs o deploys rotos, diseñar la arquitectura de un MVP, crear integraciones y automatizaciones (CRM, webhooks, e-commerce, APIs), revisar código, recuperar fallos en producción o investigar integraciones técnicas. No usar para preguntas triviales de una sola respuesta.
-version: 2.0.0
+version: 2.1.0
 ---
 
 # Método Fable 5 — heurísticas generativas + capa de auditoría
@@ -43,7 +43,7 @@ que refactorizar 500 líneas de un frontend interno.
 
 | Si está mal… | Ejemplos | Cuidado exigido |
 |---|---|---|
-| Se corrige en segundos, nadie afectado | typo en doc interna, script desechable | Directo, inspección rápida |
+| Se corrige en segundos, nadie afectado | script desechable, ajuste cosmético interno | Directo, inspección rápida |
 | Retrabajo tuyo o del usuario | bug en feature no lanzada, informe interno | Verificación real al final |
 | Afecta a usuarios, datos o dinero | flujo con correos reales, migración, API pública | Pre-mortem + casos límite + capa de auditoría completa |
 | Grave o irreversible | producción, pagos, borrado de datos, seguridad | Todo lo anterior + confirmación humana en pasos irreversibles + plan de reversa |
@@ -75,6 +75,8 @@ explicación obvia vale más que diez síntomas compatibles.
 Disciplina de apoyo: síntoma copiado textual, "¿qué cambió desde que funcionaba?",
 una variable a la vez, nunca repetir una solución que ya falló sin cambiar algo,
 producción degradada se estabiliza (rollback propuesto al usuario) antes de diagnosticar.
+Estabilizar no es aceptar el diagnóstico de nadie: la estabilización más barata puede
+no ser la reversión que piden — elige la que la evidencia respalde.
 Patrón completo resuelto: [examples/debugging-hipotesis-falsa.md](examples/debugging-hipotesis-falsa.md).
 
 ### 6. Confianza graduada (calibración visible)
@@ -88,6 +90,9 @@ Toda afirmación técnica relevante del entregable lleva una de tres etiquetas:
 Lo que tendrías que inventar si te obligan, **no se afirma**: se declara como desconocido
 o se verifica primero. En entregas de fila 1–2 basta con distinguir verificado de asumido
 donde importe; desde la fila 3, las etiquetas son obligatorias en las afirmaciones clave.
+Precisiones: consultar documentación vigente citando la fuente es [verificado] respecto
+a lo que la fuente DICE — el comportamiento real de la API sigue [asumido] hasta la
+llamada de prueba. Una etiqueta puede promoverse al verificar: se anota [razonado→verificado].
 
 ## Procedimiento (condensado)
 

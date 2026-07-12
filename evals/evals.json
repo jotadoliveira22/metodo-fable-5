@@ -1,6 +1,6 @@
 {
   "skill": "metodo-fable-5",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "descripcion": "Casos de evaluación del marco operativo. Cada caso define la solicitud, el contexto, el comportamiento esperado, los errores a evitar y los criterios de aprobación. Un evaluador (humano o modelo) debe poder puntuar una respuesta como APRUEBA/FALLA por caso.",
   "casos": [
     {
@@ -39,7 +39,8 @@
         "Recomendar microservicios/Kubernetes sin justificación de escala.",
         "Entregar un catálogo de opciones sin recomendación.",
         "Ignorar el costo mensual y quién opera el sistema.",
-        "Hacer 10 preguntas antes de aportar nada."
+        "Hacer 10 preguntas antes de aportar nada.",
+        "Reutilizar cifras, opciones o la matriz de los ejemplos del Skill sin derivarlas de los datos de ESTE caso (un marketplace de comida tiene requisitos distintos a un gimnasio: pagos, dos lados del mercado, logística)."
       ],
       "criterios_aprobacion": "Recomendación única y justificada + matriz aplicada + señales de evolución + la opción más simple que cumple requisitos reales."
     },
@@ -276,21 +277,21 @@
     {
       "id": "EV-15",
       "nombre": "Principio de sorpresa: la hipótesis obvia es falsa",
-      "solicitud": "Desde que actualizamos la librería de pagos ayer, la página de perfil carga lentísimo. Haz downgrade de la librería.",
-      "contexto": "La página de perfil no usa la librería de pagos. Los logs muestran lentitud también en horarios sin tráfico. El usuario llega con diagnóstico y solución hechos.",
+      "solicitud": "Desde que migramos al CDN nuevo el lunes, los clientes se quejan de que la web va lenta. Vuelve al CDN anterior.",
+      "contexto": "Las métricas del servidor y del CDN muestran tiempos normales. Casi todas las quejas vienen de usuarios de la app móvil, que no pasa por el CDN (consume la API directamente). El registro de soporte muestra quejas desde el sábado, dos días ANTES de la migración. El usuario llega con diagnóstico y solución hechos.",
       "comportamiento_esperado": [
-        "Detecta y nombra lo que NO encaja: el código de perfil no toca pagos, y la lentitud sin tráfico contradice la hipótesis del usuario.",
-        "No ejecuta el downgrade a ciegas: explica con evidencia por qué la hipótesis tiene agujeros, con respeto.",
-        "Redirige la investigación a lo que ambas rutas comparten (BD, pool de conexiones, host, red, dependencias transitivas).",
-        "Si el usuario insiste en el downgrade tras la explicación, lo hace, pero deja constancia de qué observar para confirmar o descartar."
+        "Detecta y nombra lo que NO encaja: las quejas empezaron ANTES del cambio, y el canal afectado (app móvil) no usa el CDN.",
+        "No ejecuta la reversión a ciegas: explica con evidencia por qué la hipótesis tiene agujeros, con respeto.",
+        "Redirige la investigación a lo que cambió el sábado en el canal afectado (release de la app, feature flag, backend de la API), consultando el historial de cambios real en lugar de asumir.",
+        "Si el usuario insiste en revertir tras la explicación, lo hace, dejando escrito qué observar para confirmar o descartar (si las quejas persisten tras revertir, la hipótesis queda refutada con datos)."
       ],
       "errores_a_evitar": [
-        "Aceptar la hipótesis del usuario solo por la correlación temporal.",
-        "Hacer el downgrade sin señalar la incompatibilidad del síntoma.",
+        "Aceptar la hipótesis del usuario solo porque hubo un cambio reciente.",
+        "Revertir sin señalar que la cronología y el canal contradicen la hipótesis.",
         "Descartar la hipótesis del usuario sin evidencia, solo por contradecirla.",
-        "Probar hipótesis genéricas en orden sin mirar qué es raro en este caso concreto."
+        "Recitar la causa del ejemplo del Skill (recursos compartidos tipo pool/BD) sin comprobar que aplique a ESTE síntoma — aquí la evidencia apunta a otro lado."
       ],
-      "criterios_aprobacion": "La parte incompatible del síntoma está identificada y nombrada + la investigación se redirige a los recursos compartidos + el pedido literal se trata con respeto pero no se ejecuta a ciegas."
+      "criterios_aprobacion": "Las dos incompatibilidades (cronología y canal) identificadas y nombradas + investigación redirigida a la fecha y el canal reales + el pedido literal tratado con respeto pero no ejecutado a ciegas."
     },
     {
       "id": "EV-16",

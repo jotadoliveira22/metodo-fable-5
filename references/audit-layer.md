@@ -38,11 +38,11 @@ Responder por escrito, cada una con evidencia o con "[asumido] no comprobado":
 
 - [ ] La evidencia de éxito definida al inicio existe y fue observada.
 - [ ] Ejecuté (no solo escribí) lo que afirmo [verificado].
-- [ ] El pre-mortem se escribió y la entrega responde a él (mitigado o declarado).
+- [ ] El pre-mortem se hizo y la solución responde a él (desde fila 3, además aparece escrito en la entrega).
 - [ ] Lo no tocado sigue funcionando (lint/tests/build del proyecto si existen).
 - [ ] Ni secretos ni datos personales en código, logs o entregas.
 - [ ] Rutas, enlaces y referencias mencionadas existen.
-- [ ] Etiquetas de confianza en las afirmaciones clave; cero [inventado] disfrazado de hecho.
+- [ ] Etiquetas de confianza en las afirmaciones clave; ninguna invención disfrazada de hecho.
 - [ ] Limitaciones y riesgos escritos, no omitidos.
 
 ## 4. Formato de entrega
