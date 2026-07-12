@@ -4,6 +4,12 @@ Skill personal de Claude Code: marco operativo para analizar, planificar, ejecut
 verificar y entregar tareas complejas de software, automatización, arquitectura,
 debugging, investigación técnica y consultoría.
 
+Diseño (v2): el núcleo son **heurísticas generativas** — preguntas que fuerzan a producir
+buen razonamiento (pre-mortem, principio de sorpresa, prueba de los 5 minutos, presupuesto
+por costo del error, olor a incoherencia, confianza graduada) — y **ejemplos resueltos**
+que enseñan por patrón. Las reglas de auditoría se conservan como capa final antes de
+entregar, no como punto de partida.
+
 No reproduce razonamiento interno de ningún modelo: sistematiza comportamientos
 observables y buenas prácticas de agentes en un procedimiento explícito y auditable.
 Las reglas que son inferencias están marcadas como heurísticas operativas.
@@ -27,20 +33,20 @@ Al ser un Skill personal, queda disponible en todos tus proyectos.
 ## Estructura
 
 ```
-SKILL.md                                  Procedimiento principal (10 etapas)
-references/decision-framework.md          Clasificación, descomposición, arquitectura, ambigüedad
-references/quality-gates.md               Verificación y puertas de calidad
-references/tool-selection.md              Qué herramienta usar según la evidencia necesaria
-references/error-recovery.md              Debugging, fallos de despliegue, recuperación
-references/software-projects.md           Reglas para código y repositorios
-references/automation-projects.md         Reglas para automatizaciones e integraciones
-examples/                                 El método aplicado de punta a punta (3 casos)
-evals/evals.json                          13 casos de evaluación
+SKILL.md                                  Núcleo: 6 movimientos generativos + procedimiento condensado
+references/audit-layer.md                 Capa final de auditoría: puertas, revisión adversarial, entrega
+references/domain-rules.md                Mínimos no negociables: software, automatizaciones, arquitectura, recuperación
+examples/debugging-hipotesis-falsa.md     Principio de sorpresa: la hipótesis obvia era falsa
+examples/debugging-example.md             Diagnóstico con evidencia y cambio mínimo
+examples/software-architecture-example.md Requisitos reales vs. imaginados, anti-sobrearquitectura
+examples/automation-pyme-example.md       Idempotencia, conteos, entrega no técnica
+evals/evals.json                          16 casos de evaluación
 CHANGELOG.md                              Historial de versiones
 ```
 
-`SKILL.md` usa progressive disclosure: contiene el procedimiento principal y enlaza
-las referencias, que solo se cargan cuando la tarea lo requiere.
+`SKILL.md` contiene el núcleo completo; los ejemplos son el vehículo principal de
+aprendizaje (patrón antes que regla) y las referencias solo se cargan como capa final
+en tareas de riesgo medio-alto.
 
 ## Actualización (aprendizaje continuo)
 
@@ -54,7 +60,7 @@ no a este Skill.
 
 ## Evaluación
 
-`evals/evals.json` contiene 13 casos con solicitud, contexto, comportamiento esperado,
+`evals/evals.json` contiene 16 casos con solicitud, contexto, comportamiento esperado,
 errores a evitar y criterios de aprobación. Para probar el Skill tras un cambio, pide a
 una instancia de Claude sin contexto previo que resuelva los casos y puntúa con esos
 criterios.

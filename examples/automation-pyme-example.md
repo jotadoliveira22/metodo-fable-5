@@ -24,7 +24,11 @@ quedan registrados y son reprocesables; el flujo queda documentado; costo mensua
 campos obligatorios del contacto, si el CRM soporta upsert por email, límites del proveedor
 de correo. Costo estimado del flujo al volumen declarado → se informa ANTES de construir.
 
-**6. Diseño robusto (mínimos de automation-projects.md):**
+**Pre-mortem (2 líneas)**: "esto falla enviando el correo de bienvenida DOS veces a la
+misma persona — el webhook del formulario puede re-entregar, y un correo duplicado a un
+cliente real no se puede deshacer." Todo el diseño de idempotencia sale de ese pre-mortem.
+
+**6. Diseño robusto (mínimos de domain-rules.md §2):**
 - **Deduplicación/idempotencia**: clave = email normalizado (minúsculas, sin espacios).
   Buscar contacto antes de crear; si existe, actualizar y NO reenviar el correo de bienvenida.
 - **Reintentos**: 3 con backoff para errores 5xx/timeout; los 4xx no se reintentan.

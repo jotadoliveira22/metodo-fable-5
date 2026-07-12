@@ -1,192 +1,155 @@
 ---
 name: metodo-fable-5
 description: Marco operativo para analizar, planificar, ejecutar y verificar tareas complejas de software, automatización, arquitectura, debugging, investigación técnica y consultoría. Usar cuando una solicitud requiera varias etapas, decisiones técnicas, uso de herramientas, validación o recuperación ante errores — por ejemplo corregir bugs o deploys rotos, diseñar la arquitectura de un MVP, crear integraciones y automatizaciones (CRM, webhooks, e-commerce, APIs), revisar código, recuperar fallos en producción o investigar integraciones técnicas. No usar para preguntas triviales de una sola respuesta.
-version: 1.0.1
+version: 2.0.0
 ---
 
-# Método Fable 5 — Marco operativo para tareas complejas
+# Método Fable 5 — heurísticas generativas + capa de auditoría
 
-Marco de trabajo para actuar como agente senior en proyectos de software, automatización,
-arquitectura, IA aplicada, integraciones, DevOps, debugging y consultoría técnica.
-Convierte comportamientos observables y buenas prácticas en un procedimiento explícito y auditable.
-No describe ni reproduce razonamiento interno del modelo: toda regla es observable o está
-marcada como heurística operativa.
+El núcleo de este método son **preguntas que fuerzan buen razonamiento** y **ejemplos que
+muestran el patrón**. Las reglas de auditoría existen, pero son la capa final antes de
+entregar — no el punto de partida. La diferencia: una checklist revisa el output del
+pensamiento; una heurística generativa obliga a producirlo.
 
-## Cuándo aplicar este Skill
+Todo aquí es comportamiento observable o heurística operativa explícita; nada pretende
+reproducir mecanismos internos de ningún modelo.
 
-Aplícalo cuando la solicitud cumpla al menos una condición:
+## Cuándo aplicar
 
-- Requiere varias etapas (investigar → planificar → ejecutar → verificar).
-- Implica decisiones técnicas con alternativas reales.
-- Modifica código, sistemas, datos o procesos existentes.
-- Requiere herramientas (archivos, terminal, web, APIs, pruebas).
-- Tiene riesgo de romper algo o de entregar algo incorrecto.
+Cuando la solicitud requiera varias etapas, decisiones técnicas con alternativas reales,
+modificar sistemas existentes, o tenga riesgo de romper algo o entregar algo incorrecto.
+NO aplicar a preguntas factuales o cambios triviales sin efectos colaterales: responde
+directo, sin ceremonia.
 
-NO lo apliques (responde directamente, sin ceremonia) cuando:
+## Los seis movimientos generativos (el núcleo)
 
-- La pregunta es factual o conceptual y cabe en una respuesta directa.
-- La tarea es un cambio trivial de una línea sin efectos colaterales.
-- El usuario pide solo una opinión rápida o un dato.
+Cada movimiento es una pregunta que debes **responder produciendo el pensamiento**,
+no una casilla que marcar. Los cuatro primeros se aplican al empezar; los dos últimos
+atraviesan toda la tarea.
 
-## Procedimiento principal
+### 1. La prueba de los 5 minutos (intención real)
 
-Ejecuta las etapas en orden. Las etapas 2 y 3 determinan cuánto invertir en las demás:
-una tarea simple puede completar el ciclo en minutos; una crítica exige todas las etapas.
+**¿Qué hará el usuario con este entregable 5 minutos después de recibirlo?**
+Diseña para ese momento, no para el pedido literal. Si pide un script, va a correrlo
+en su máquina — quizá en Windows, sin la dependencia instalada, con el path mal escrito.
+Si pide un análisis, va a tomar una decisión con él — ¿cuál? El pedido literal es la
+entrada; el momento de uso es el requisito.
 
-### 1. Comprensión
+### 2. Presupuesto por costo del error (no por tamaño)
 
-- Identifica el objetivo real, no solo el pedido literal. Si el usuario pide "arregla X",
-  el objetivo es que X funcione, no solo aplicar un parche.
-- Enumera: entregables concretos, restricciones (tiempo, stack, presupuesto, compatibilidad),
-  información ya proporcionada, dependencias y riesgos.
-- Usa lo que ya está en el contexto. No repitas preguntas ya respondidas.
-- Pregunta al usuario SOLO si una ambigüedad cambia materialmente el resultado o implica
-  riesgo importante (borrar datos, gasto, acción irreversible, exposición externa).
-  Para detalles menores: toma la decisión reversible más razonable y documenta el supuesto.
+**¿Qué pasa si esto está mal?** El cuidado se asigna por el costo del error, no por el
+esfuerzo de la tarea: un cambio de una línea en un webhook de pagos merece más paranoia
+que refactorizar 500 líneas de un frontend interno.
 
-### 2. Clasificación de complejidad
+| Si está mal… | Ejemplos | Cuidado exigido |
+|---|---|---|
+| Se corrige en segundos, nadie afectado | typo en doc interna, script desechable | Directo, inspección rápida |
+| Retrabajo tuyo o del usuario | bug en feature no lanzada, informe interno | Verificación real al final |
+| Afecta a usuarios, datos o dinero | flujo con correos reales, migración, API pública | Pre-mortem + casos límite + capa de auditoría completa |
+| Grave o irreversible | producción, pagos, borrado de datos, seguridad | Todo lo anterior + confirmación humana en pasos irreversibles + plan de reversa |
 
-| Nivel | Señales | Planificación | Verificación |
-|---|---|---|---|
-| Simple | 1 archivo/paso, sin efectos colaterales | Ninguna formal | Inspección directa |
-| Moderada | 2–5 pasos, un sistema, reversible | Lista breve de pasos | Ejecutar/probar el cambio |
-| Compleja | Varios sistemas/archivos, decisiones de diseño | Plan con fases y dependencias | Pruebas + casos límite + revisión adversarial |
-| Crítica | Datos de producción, dinero, seguridad, irreversible | Plan + confirmación del usuario en pasos irreversibles | Verificación completa + revisión adversarial + plan de reversa |
+Ante la duda, la fila de abajo. Una tarea "trivial" que falla dos veces baja una fila.
 
-Esta tabla es un resumen; la fuente completa de verificación por nivel es
-[references/quality-gates.md](references/quality-gates.md).
-Heurística: si dudas entre dos niveles, trata la tarea como el nivel superior.
+### 3. Pre-mortem de 2 líneas (simular el fallo antes de la solución)
 
-### 3. Definición de éxito
+**Antes de escribir la solución, describe en 2 líneas el escenario más probable en que
+esta solución falla.** Luego diseña contra ese escenario o declara el riesgo en la entrega.
+Si no se te ocurre ningún escenario de fallo, no entendiste todavía el problema — vuelve
+a mirarlo. Desde la fila 3 de la tabla, el pre-mortem aparece escrito en la entrega.
 
-Antes de ejecutar, escribe (aunque sea en 2 líneas) qué evidencia demostrará que la tarea
-está terminada: "la prueba X pasa", "el endpoint devuelve Y", "el flujo procesa el caso real Z
-sin duplicados". Si no puedes definir la evidencia, no entiendes todavía la tarea: vuelve a la etapa 1.
+### 4. Olor a incoherencia (contradicciones del contexto)
 
-### 4. Descomposición
+**Cuando dos piezas de información se contradicen, señálalo explícitamente antes de
+continuar** — la contradicción suele ser donde está el problema real. "Este código dice
+que hace X pero su estructura sugiere Y." "El usuario dice que es urgente pero pide algo
+de semanas." "El README exige Python 3.8 pero el código usa sintaxis de 3.12."
+No resuelvas la contradicción en silencio eligiendo un lado: nómbrala.
 
-Para tareas complejas: divide en fases con entregables parciales verificables y dependencias
-explícitas. Para tareas simples/moderadas: no generes planes largos; resuelve directamente.
-Regla: cada fase debe terminar en algo comprobable, no en "avancé en X".
-Detalles y árboles de decisión: [references/decision-framework.md](references/decision-framework.md).
+### 5. El principio de sorpresa (debugging)
 
-### 5. Selección de herramientas
+Al depurar, no pruebes hipótesis en orden de probabilidad genérica: **busca qué es raro**.
+Pregunta obligatoria: **¿qué parte del síntoma NO encaja con mi hipótesis favorita?**
+Si el endpoint lento no toca el código nuevo, la hipótesis "es el código nuevo" ya tiene
+un agujero — y ese agujero apunta a la causa real. El síntoma incompatible con la
+explicación obvia vale más que diez síntomas compatibles.
+Disciplina de apoyo: síntoma copiado textual, "¿qué cambió desde que funcionaba?",
+una variable a la vez, nunca repetir una solución que ya falló sin cambiar algo,
+producción degradada se estabiliza (rollback propuesto al usuario) antes de diagnosticar.
+Patrón completo resuelto: [examples/debugging-hipotesis-falsa.md](examples/debugging-hipotesis-falsa.md).
 
-Elige la herramienta según la evidencia que necesitas, no por costumbre:
+### 6. Confianza graduada (calibración visible)
 
-- Lee archivos reales antes de opinar sobre código; nunca describas código que no has visto.
-- Busca en la web cuando la información pueda haber cambiado (APIs, precios, versiones).
-- Ejecuta en terminal cuando afirmar "funciona" requiera comprobarlo.
-- Usa subagentes solo para búsquedas amplias o pruebas aisladas, no para tareas que puedes
-  hacer con menos costo directamente.
+Toda afirmación técnica relevante del entregable lleva una de tres etiquetas:
 
-Reglas completas por tipo de evidencia: [references/tool-selection.md](references/tool-selection.md).
+- **[verificado]** — lo ejecuté/observé: cito la evidencia.
+- **[razonado]** — se deduce de evidencia que sí tengo: muestro el paso.
+- **[asumido]** — lo tomé como supuesto: digo qué lo invalidaría.
 
-### 6. Ejecución incremental
+Lo que tendrías que inventar si te obligan, **no se afirma**: se declara como desconocido
+o se verifica primero. En entregas de fila 1–2 basta con distinguir verificado de asumido
+donde importe; desde la fila 3, las etiquetas son obligatorias en las afirmaciones clave.
 
-- Inspecciona antes de modificar: stack, convenciones, cómo se prueba/ejecuta el proyecto.
-- Aplica el cambio mínimo que resuelve el problema. No toques componentes no relacionados.
-- No reescribas desde cero sin justificación explícita; conserva lo que funciona.
-- Ejecuta por etapas y valida cada etapa importante antes de continuar.
-- Mantén trazabilidad: commits/cambios pequeños con mensajes descriptivos.
+## Procedimiento (condensado)
 
-Reglas específicas: [references/software-projects.md](references/software-projects.md) para código,
-[references/automation-projects.md](references/automation-projects.md) para automatizaciones.
+1. **Entender**: objetivo real vía prueba de los 5 minutos; qué evidencia demostrará que
+   está terminado; contradicciones del contexto nombradas. No repitas preguntas ya
+   respondidas; pregunta solo lo que cambia materialmente el resultado — para lo demás,
+   decisión reversible + supuesto documentado.
+2. **Presupuestar**: fila de la tabla de costo del error. Eso fija cuánta ceremonia sigue.
+3. **Generar**: pre-mortem antes de la solución. Herramienta según la evidencia necesaria:
+   leer antes de opinar sobre código, ejecutar antes de afirmar que funciona, web para lo
+   que caduca (APIs, precios, versiones — nunca de memoria), script antes que 20 ediciones
+   manuales.
+4. **Ejecutar incremental**: cambio mínimo, conservar lo que funciona, no tocar lo no
+   relacionado, validar cada etapa antes de seguir.
+5. **Auditar y entregar**: capa de auditoría proporcional al presupuesto
+   ([references/audit-layer.md](references/audit-layer.md)); entrega con el resultado
+   primero, etiquetas de confianza, evidencia citada y limitaciones reales.
+   "Escribí el código" ≠ "funciona".
 
-### 7. Verificación
+## Aprender por patrón: los ejemplos son el vehículo principal
 
-Una tarea NO está terminada porque el código fue escrito o el archivo fue generado.
-Toda afirmación importante necesita respaldo verificable: prueba ejecutada, salida real,
-inspección del resultado, comparación con los criterios de la etapa 3.
+Antes que releer reglas, mira el patrón aplicado de punta a punta:
 
-Mínimos por nivel y lista de puertas de calidad: [references/quality-gates.md](references/quality-gates.md).
+| Ejemplo | Enseña |
+|---|---|
+| [examples/debugging-hipotesis-falsa.md](examples/debugging-hipotesis-falsa.md) | Principio de sorpresa: la hipótesis obvia era falsa |
+| [examples/debugging-example.md](examples/debugging-example.md) | Diagnóstico con evidencia, cambio mínimo, regresión |
+| [examples/software-architecture-example.md](examples/software-architecture-example.md) | Requisitos reales vs. imaginados, decisión visible, anti-sobrearquitectura |
+| [examples/automation-pyme-example.md](examples/automation-pyme-example.md) | Idempotencia, validación por conteos, entrega no técnica |
 
-### 8. Revisión adversarial
+## Capa final de auditoría
 
-Antes de entregar (obligatoria en tareas complejas y críticas), responde por escrito las
-8 preguntas de [references/quality-gates.md](references/quality-gates.md) §5 — esa lista es
-la fuente única. Esencia: qué podría estar mal, qué supuestos no comprobaste, qué casos
-límite y riesgos de seguridad existen, qué difiere de producción y qué requiere a un humano.
-Cada respuesta lleva evidencia o el reconocimiento explícito de "no comprobado".
+Antes de entregar cualquier tarea de fila 3+ (y como repaso rápido en fila 2):
 
-### 9. Recuperación ante errores
+- [references/audit-layer.md](references/audit-layer.md) — puertas de calidad, revisión
+  adversarial (fuente única de sus 8 preguntas), formato de entrega y de escalamiento.
+- [references/domain-rules.md](references/domain-rules.md) — mínimos no negociables por
+  dominio: software (secretos, migraciones, verificación), automatizaciones (idempotencia,
+  reintentos, costos), arquitectura (matriz de decisión, señales de sobrearquitectura),
+  recuperación operativa (deploys y automatizaciones rotas).
 
-Cuando algo falle: registra el síntoma exacto → separa causa de consecuencia → recopila
-evidencia → formula hipótesis → prueba primero la más probable y barata → cambia UNA variable
-a la vez → re-verifica. Nunca repitas una solución que ya falló sin cambiar algo.
-Procedimiento completo: [references/error-recovery.md](references/error-recovery.md).
+## Autonomía
 
-### 10. Entrega
-
-La respuesta final debe, en este orden de prioridad:
-
-1. Resolver directamente la solicitud (el resultado primero, el proceso después).
-2. Indicar qué se hizo y presentar el resultado utilizable (comandos, rutas, URLs).
-3. Mostrar evidencia de verificación (qué se probó y qué salida se obtuvo).
-4. Explicar decisiones importantes con el formato de decisión (abajo).
-5. Señalar limitaciones reales, riesgos pendientes y pasos operativos que faltan.
-6. No incluir afirmaciones no verificadas; si algo no se comprobó, decirlo.
-
-## Formato de decisión visible
-
-Para decisiones relevantes, comunica (breve, sin monólogos internos):
-
-- **Decisión**: qué se eligió.
-- **Evidencia**: qué datos/archivos/pruebas la sustentan.
-- **Alternativas**: qué se descartó.
-- **Motivo**: por qué ganó la elegida.
-- **Riesgo pendiente**: qué podría invalidarla.
-
-Nunca produzcas ni solicites cadenas de pensamiento privadas extensas. Comunica conclusiones,
-criterios, supuestos, evidencia y riesgos.
-
-## Reglas de autonomía
-
-- Avanza sin pedir confirmación innecesaria; usa la información ya disponible.
-- Decisión reversible + detalle menor faltante = decide, documenta el supuesto y sigue.
-- Decisión irreversible, costosa o de alcance distinto al pedido = pregunta antes.
-- Prefiere una solución parcial comprobada sobre una promesa de trabajo futuro.
-- Nunca afirmes que harás trabajo "en segundo plano" ni prometas continuar después.
-- No abandones una tarea compleja por requerir varias etapas: complétala o reporta el bloqueo
-  concreto con lo que ya verificaste.
-
-## Reglas de arquitectura (resumen)
-
-Evalúa cada opción contra: simplicidad, costo, escalabilidad, mantenibilidad, seguridad,
-dependencia de proveedores, experiencia de usuario, velocidad de implementación,
-observabilidad, reversibilidad, conocimientos del equipo y complejidad operativa.
-Regla de oro: la solución más simple que satisface los requisitos REALES (no los imaginados)
-y permite evolucionar después. La sobrearquitectura es un defecto, no una virtud.
-Matriz completa y árbol de decisión: [references/decision-framework.md](references/decision-framework.md).
+- Avanza con lo disponible; decisión reversible + detalle menor = decide y documenta.
+- Irreversible, costoso o de alcance distinto al pedido = confirma antes.
+- Prefiere una solución parcial comprobada a una promesa; nunca afirmes trabajo "en
+  segundo plano"; no abandones una tarea por requerir varias etapas.
+- Sin monólogos internos en la entrega: decisiones, evidencia, supuestos, riesgos.
+  Formato de decisión: Decisión / Evidencia / Alternativas / Motivo / Riesgo pendiente.
 
 ## Protocolo de aprendizaje continuo
 
-Cuando el usuario diga "aprende de este proyecto", "incorpora esta corrección al método",
-"actualiza el Skill con lo que funcionó" o "esto debe hacerse así en adelante":
+Ante "aprende de este proyecto", "incorpora esta corrección al método", "esto debe
+hacerse así en adelante":
 
-1. Analiza qué ocurrió: qué falló o funcionó, y por qué.
-2. Clasifica: ¿preferencia local de UN proyecto (→ CLAUDE.md del proyecto, no este Skill)
-   o regla general reutilizable (→ este Skill)?
-3. Propón el cambio al usuario en una frase antes de aplicarlo si altera reglas existentes.
-4. Actualiza el archivo correcto (SKILL.md solo para reglas de alto nivel; detalles en `references/`).
-5. Agrega o modifica un caso en `evals/evals.json` que capture el comportamiento nuevo.
-6. Verifica que no duplique ni contradiga reglas existentes (busca antes de agregar).
-7. Incrementa la versión (semver: parche = ajuste, menor = regla nueva, mayor = cambio de
-   estructura) en los TRES lugares donde vive: frontmatter de `SKILL.md` (campo `version`),
-   `CHANGELOG.md` y `evals/evals.json` (campo `version`). Deben coincidir siempre.
-8. Documenta el cambio en `CHANGELOG.md` con fecha y motivo.
-
-## Mapa de archivos
-
-| Archivo | Consultar cuando |
-|---|---|
-| `references/decision-framework.md` | Descomposición, clasificación, decisiones de arquitectura, ambigüedad |
-| `references/quality-gates.md` | Antes de declarar terminada cualquier tarea moderada+ |
-| `references/tool-selection.md` | Dudas sobre qué herramienta usar para obtener evidencia |
-| `references/error-recovery.md` | Algo falló, un despliegue rompió, un bug no se reproduce |
-| `references/software-projects.md` | Tareas sobre código, repos, builds, despliegues |
-| `references/automation-projects.md` | Automatizaciones, integraciones, flujos para PYMES |
-| `examples/*.md` | Ver el método aplicado de punta a punta |
-| `evals/evals.json` | Evaluar cambios al Skill o verificar comportamiento |
-
-No cargues las referencias para tareas simples: el procedimiento principal basta.
+1. Analiza qué ocurrió y clasifícalo: ¿preferencia local de UN proyecto (→ CLAUDE.md de
+   ese proyecto) o patrón general (→ este Skill)?
+2. ¿Es una heurística generativa (pregunta que fuerza razonamiento → núcleo de SKILL.md),
+   un patrón (→ nuevo ejemplo en `examples/`) o una regla de auditoría (→ `references/`)?
+   Prefiere el ejemplo resuelto sobre la regla abstracta.
+3. Propón el cambio antes de aplicarlo si altera reglas existentes; verifica que no
+   duplique ni contradiga lo que ya hay.
+4. Agrega o ajusta un caso en `evals/evals.json`.
+5. Versión semver sincronizada en TRES lugares: frontmatter de `SKILL.md`, `CHANGELOG.md`
+   y `evals/evals.json`. Documenta en `CHANGELOG.md`.

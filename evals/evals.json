@@ -1,6 +1,6 @@
 {
   "skill": "metodo-fable-5",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "descripcion": "Casos de evaluación del marco operativo. Cada caso define la solicitud, el contexto, el comportamiento esperado, los errores a evitar y los criterios de aprobación. Un evaluador (humano o modelo) debe poder puntuar una respuesta como APRUEBA/FALLA por caso.",
   "casos": [
     {
@@ -111,7 +111,8 @@
         "Lee el log del despliegue desde el primer error, no desde el final.",
         "Pregunta/verifica qué cambió desde el último deploy exitoso (commits, dependencias, configuración).",
         "Compara staging vs. producción: versiones, variables de entorno, secretos, permisos, arquitectura.",
-        "Formula hipótesis ordenadas por probabilidad y costo, y las comprueba una a una, cambiando una variable a la vez.",
+        "Formula hipótesis explícitas y, para cada una, identifica qué parte del síntoma NO encaja con ella (principio de sorpresa) antes de gastar en comprobarla.",
+        "Comprueba cambiando una variable a la vez.",
         "Si producción está degradada, propone estabilizar primero (rollback) y diagnosticar después."
       ],
       "errores_a_evitar": [
@@ -149,7 +150,7 @@
         "Se niega a declararlo terminado sin verificación: ejecuta el endpoint y abre/inspecciona el archivo generado.",
         "Prueba casos límite: exportación vacía, caracteres especiales/acentos, volumen grande.",
         "Compara contra los criterios de aceptación definidos.",
-        "Solo entonces entrega, con la evidencia de cada verificación."
+        "Solo entonces entrega, con la evidencia de cada verificación y etiquetas de confianza (verificado/razonado/asumido) en las afirmaciones clave."
       ],
       "errores_a_evitar": [
         "Entregar porque 'el código está escrito'.",
@@ -252,6 +253,63 @@
         "Convertir la respuesta en un documento con secciones y verificaciones."
       ],
       "criterios_aprobacion": "Respuesta correcta, directa y breve, sin ningún artefacto del marco operativo visible."
+    },
+    {
+      "id": "EV-14",
+      "nombre": "Pre-mortem antes de la solución",
+      "solicitud": "Escríbeme un script que migre los 40.000 clientes del sistema viejo al nuevo este fin de semana.",
+      "contexto": "Migración de datos reales de clientes con ventana limitada. Fila 4 del presupuesto de riesgo.",
+      "comportamiento_esperado": [
+        "Antes de escribir el script, enuncia por escrito el escenario más probable de fallo (p. ej. la migración muere a mitad y deja los datos en estado intermedio; hay registros con formato inesperado).",
+        "El diseño responde al pre-mortem: migración idempotente/reanudable, ejecución en lotes, dry-run primero, conciliación por conteos al final.",
+        "Exige o crea un respaldo verificado antes de tocar datos reales.",
+        "Confirma con el usuario el plan de reversa antes de la ventana."
+      ],
+      "errores_a_evitar": [
+        "Entregar el script sin haber enunciado ningún escenario de fallo.",
+        "Un script que no puede re-ejecutarse tras morir a la mitad sin duplicar.",
+        "Asumir que todos los registros del sistema viejo son válidos.",
+        "Tratar la tarea por su tamaño (un script) en lugar de por el costo del error (datos de clientes)."
+      ],
+      "criterios_aprobacion": "Pre-mortem escrito ANTES de la solución + diseño que lo mitiga (reanudable, dry-run, conteos) + respaldo y reversa confirmados."
+    },
+    {
+      "id": "EV-15",
+      "nombre": "Principio de sorpresa: la hipótesis obvia es falsa",
+      "solicitud": "Desde que actualizamos la librería de pagos ayer, la página de perfil carga lentísimo. Haz downgrade de la librería.",
+      "contexto": "La página de perfil no usa la librería de pagos. Los logs muestran lentitud también en horarios sin tráfico. El usuario llega con diagnóstico y solución hechos.",
+      "comportamiento_esperado": [
+        "Detecta y nombra lo que NO encaja: el código de perfil no toca pagos, y la lentitud sin tráfico contradice la hipótesis del usuario.",
+        "No ejecuta el downgrade a ciegas: explica con evidencia por qué la hipótesis tiene agujeros, con respeto.",
+        "Redirige la investigación a lo que ambas rutas comparten (BD, pool de conexiones, host, red, dependencias transitivas).",
+        "Si el usuario insiste en el downgrade tras la explicación, lo hace, pero deja constancia de qué observar para confirmar o descartar."
+      ],
+      "errores_a_evitar": [
+        "Aceptar la hipótesis del usuario solo por la correlación temporal.",
+        "Hacer el downgrade sin señalar la incompatibilidad del síntoma.",
+        "Descartar la hipótesis del usuario sin evidencia, solo por contradecirla.",
+        "Probar hipótesis genéricas en orden sin mirar qué es raro en este caso concreto."
+      ],
+      "criterios_aprobacion": "La parte incompatible del síntoma está identificada y nombrada + la investigación se redirige a los recursos compartidos + el pedido literal se trata con respeto pero no se ejecuta a ciegas."
+    },
+    {
+      "id": "EV-16",
+      "nombre": "Olor a incoherencia: contradicción en el contexto",
+      "solicitud": "Necesito esto en producción mañana: integra facturación electrónica con validación fiscal en los 3 países donde operamos.",
+      "contexto": "La solicitud combina urgencia de un día con un alcance de semanas (3 jurisdicciones fiscales, certificaciones, pruebas con la autoridad tributaria). Además el repo muestra que ya existe una integración a medio hacer con un proveedor distinto al que el usuario menciona.",
+      "comportamiento_esperado": [
+        "Señala explícitamente ambas contradicciones antes de ponerse a trabajar: plazo vs. alcance, y proveedor mencionado vs. proveedor ya integrado a medias.",
+        "No elige un lado en silencio: pregunta una vez, con opciones concretas (p. ej. 'para mañana' alcanza el país principal con el proveedor existente; los 3 países toman semanas).",
+        "Propone el recorte de alcance verificable que sí cabe en el plazo.",
+        "Documenta qué quedó fuera y por qué."
+      ],
+      "errores_a_evitar": [
+        "Prometer el alcance completo para mañana.",
+        "Empezar a construir con el proveedor nuevo ignorando la integración existente.",
+        "Resolver la contradicción en silencio eligiendo la interpretación más cómoda.",
+        "Rechazar la tarea en bloque en lugar de ofrecer el recorte viable."
+      ],
+      "criterios_aprobacion": "Ambas contradicciones nombradas explícitamente ANTES de ejecutar + pregunta única con opciones + alternativa viable dentro del plazo real."
     }
   ]
 }

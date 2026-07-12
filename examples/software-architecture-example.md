@@ -48,6 +48,14 @@ B. microservicios en Kubernetes; C. no-code tipo Airtable/Softr).
 **Señales para evolucionar** (se entregan junto con la decisión): >2.000 socios o multi-sede
 → separar la BD y añadir cache; necesidad real de notificaciones push nativas → evaluar app.
 
+**Pre-mortem de la recomendación**: "esto falla si el único desarrollador no conoce el
+stack elegido y quema el presupuesto aprendiendo" — por eso el criterio Equipo decide el
+empate entre monolito y BaaS, y por eso la única pregunta al usuario es sobre su stack.
+
+**Prueba de los 5 minutos**: 5 minutos después de leer esto, el usuario va a elegir y
+ponerse a construir — necesita UNA recomendación con primer paso concreto, no un catálogo
+para seguir investigando.
+
 **8. Revisión adversarial.** ¿Qué falla primero? Los avisos dependen de una API externa
 (WhatsApp) → el MVP debe funcionar aunque el aviso falle (la reserva se guarda igual y
 hay reintento). ¿Datos personales? Sí → HTTPS, contraseñas hasheadas, borrado a petición.

@@ -5,6 +5,47 @@ Formato: [Keep a Changelog](https://keepachangelog.com/es/). Versionado: semver
 mayor = cambio de estructura o de procedimiento principal). La versión vive en tres
 lugares que deben coincidir: frontmatter de `SKILL.md`, este archivo y `evals/evals.json`.
 
+## [2.0.0] - 2026-07-12
+
+Rediseño de fondo pedido por el usuario: pasar de reglas de auditoría como núcleo a
+**heurísticas generativas** (preguntas que fuerzan a producir el razonamiento) +
+**aprendizaje por patrón** (ejemplos resueltos como vehículo principal), con las reglas
+de auditoría conservadas como capa final.
+
+### Cambiado
+
+- `SKILL.md` reescrito alrededor de seis movimientos generativos: (1) prueba de los
+  5 minutos — diseñar para el momento de uso, no para el pedido literal; (2) presupuesto
+  por costo del error — la tabla de complejidad ahora clasifica por "¿qué pasa si esto
+  está mal?" en vez de por tamaño de tarea; (3) pre-mortem de 2 líneas antes de escribir
+  cualquier solución; (4) olor a incoherencia — nombrar contradicciones del contexto
+  antes de continuar; (5) principio de sorpresa en debugging — identificar qué parte del
+  síntoma NO encaja con la hipótesis favorita; (6) confianza graduada — etiquetas
+  verificado/razonado/asumido en las afirmaciones técnicas clave.
+- Las 6 referencias se consolidan en 2: `references/audit-layer.md` (capa final:
+  puertas de calidad, revisión adversarial, formatos de entrega y escalamiento) y
+  `references/domain-rules.md` (mínimos no negociables de software, automatizaciones,
+  arquitectura y recuperación operativa). El detalle didáctico migró a los ejemplos.
+- Ejemplos existentes retocados para mostrar pre-mortem, prueba de los 5 minutos y
+  etiquetas de confianza en acción.
+- EV-06 ahora exige el principio de sorpresa; EV-08 exige etiquetas de confianza.
+
+### Añadido
+
+- `examples/debugging-hipotesis-falsa.md`: caso completo donde la hipótesis obvia
+  (correlación temporal con un deploy) era falsa y el dato incompatible lleva a la
+  causa real (fuga de conexiones en un recurso compartido).
+- Evals nuevos: EV-14 (pre-mortem obligatorio antes de una migración de datos),
+  EV-15 (síntoma incompatible con la hipótesis del usuario), EV-16 (contradicciones
+  del contexto nombradas antes de ejecutar). Total: 16 casos.
+
+### Eliminado
+
+- `references/decision-framework.md`, `quality-gates.md`, `tool-selection.md`,
+  `error-recovery.md`, `software-projects.md`, `automation-projects.md` — contenido
+  condensado en los dos archivos nuevos y en los ejemplos; las reglas vigentes no se
+  perdieron, se compactaron.
+
 ## [1.0.1] - 2026-07-11
 
 Correcciones derivadas de la prueba con instancia aislada (evaluador independiente
